@@ -7,15 +7,29 @@
 //
 
 import UIKit
+import AVFoundation
+
 
 class MasterViewController: UITableViewController {
     
     var detailViewController: DetailViewController? = nil
     var objects = [AnyObject]()
     
+    // MARK: - ViewController Class-Wide Variables
+    // MARK: Speach Related
+    let mySpeechSynth = AVSpeechSynthesizer()
+    var myRate: Float = 0.50
+    var myPitch: Float = 1.15
+    var myVolume: Float = 0.92
+    var currentLang = ("en-US", "English","United States","American English ","🇺🇸")
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        speakThisString("yes, and.")
+        
         // Do any additional setup after loading the view, typically from a nib.
         self.navigationItem.leftBarButtonItem = self.editButtonItem()
         
@@ -60,7 +74,12 @@ class MasterViewController: UITableViewController {
     // MARK: - Table View
     
     override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        print("selected indexPath.row \(indexPath.row)"  + langCodeAll38[indexPath.row].3)
+       
+        let position = indexPath.row + 1
+        
+        print("selected indexPath.row \(position)"  + langCodeAll38[indexPath.row].3)
+        currentLang = langCodeAll38[position]
+        speakThisString(currentLang.3)
     }
     
     
@@ -123,7 +142,6 @@ class MasterViewController: UITableViewController {
         //Spanish
         ("es-ES",       "Spanish",     "Spain", "Español","🇪🇸"),
         ("es-MX",       "Spanish",     "Mexico", "Español de México","🇲🇽"),
-        ("fi-FI",       "Finnish",     "Finland","Suomi","🇫🇮"),
 
         //Dutch
         ("nl-BE",       "Dutch",       "Belgium","Nederlandse","🇧🇪"),
@@ -134,18 +152,23 @@ class MasterViewController: UITableViewController {
         //Eurasia-ish
         ("el-GR",      "Modern Greek",        "Greece","ελληνική","🇬🇷"),
         ("it-IT",       "Italian",     "Italy", "Italiano","🇮🇹"),
-        ("cs-CZ", "Czech", "Czech Republic","český","🇨🇿"),
-        ("de-DE",       "German", "Germany", "Deutsche","🇩🇪"),
-        ("no-NO",       "Norwegian",    "Norway", "Norsk","🇳🇴"),
-        ("pl-PL",       "Polish",      "Poland", "Polski","🇵🇱"),
-        ("ro-RO",       "Romanian",        "Romania","Română","🇷🇴"),
-        ("da-DK", "Danish","Denmark","Dansk","🇩🇰"),
+
 
         ("ru-RU",       "Russian",     "Russian Federation","русский","🇷🇺"),
+        ("cs-CZ", "Czech", "Czech Republic","český","🇨🇿"),
         ("sk-SK",       "Slovak",      "Slovakia", "Slovenčina","🇸🇰"),
+        ("pl-PL",       "Polish",      "Poland", "Polski","🇵🇱"),
+
+        ("da-DK", "Danish","Denmark","Dansk","🇩🇰"),
         ("sv-SE",       "Swedish",     "Sweden","Svenska","🇸🇪"),
-        ("tr-TR",       "Turkish",     "Turkey","Türkçe","🇹🇷"),
+        ("fi-FI",       "Finnish",     "Finland","Suomi","🇫🇮"),
+        ("no-NO",       "Norwegian",    "Norway", "Norsk","🇳🇴"),
+        ("de-DE",       "German", "Germany", "Deutsche","🇩🇪"),
+
+        ("ro-RO",       "Romanian",        "Romania","Română","🇷🇴"),
         ("hu-HU",       "Hungarian",    "Hungary", "Magyar","🇭🇺"),
+
+        ("tr-TR",       "Turkish",     "Turkey","Türkçe","🇹🇷"),
 
 
         
@@ -172,6 +195,27 @@ class MasterViewController: UITableViewController {
         ("zh-HK",       "Chinese",   "Hong Kong","漢語/汉语","🇭🇰"),
         ("zh-TW",       "Chinese",     "Taiwan","漢語/汉语","🇹🇼")
     ]
+    
+    
+    
+    
+    //MARK: - Speaking Machine
+    
+    func speakThisString(passedString: String){
+        
+        mySpeechSynth.stopSpeakingAtBoundary(AVSpeechBoundary.Immediate)
+        
+        let myUtterance = AVSpeechUtterance(string: passedString)
+        myUtterance.rate = myRate
+        myUtterance.pitchMultiplier = myPitch
+        myUtterance.volume = myVolume
+        myUtterance.voice = AVSpeechSynthesisVoice(language: currentLang.0)
+        mySpeechSynth.speakUtterance(myUtterance)
+        
+        
+        
+    }
+
     
 }
 
